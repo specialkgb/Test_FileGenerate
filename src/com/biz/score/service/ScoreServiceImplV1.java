@@ -21,12 +21,14 @@ public class ScoreServiceImplV1 implements ScoreService {
 	private String fileName;
 	private int[] totalSum;
 	private int[] totalAvg;
+	
 
 	public ScoreServiceImplV1() {
 		scoreList = new ArrayList<ScoreVO>();
 		fileName = "src/com/biz/score/data/score.txt";
 		scan = new Scanner(System.in);
 		totalSum = new int[5];
+		
 	}
 
 	@Override
@@ -187,6 +189,11 @@ public class ScoreServiceImplV1 implements ScoreService {
 
 	@Override
 	public void scoreList() {
+		totalSum[0] = 0;
+		totalSum[1] = 0;
+		totalSum[2] = 0;
+		totalSum[3] = 0;
+		
 		ScoreVO scoreVO;
 		System.out.println("========================================================");
 		System.out.println("성적일람표");
@@ -217,14 +224,22 @@ public class ScoreServiceImplV1 implements ScoreService {
 		int subSum = 0;
 
 		subSum = totalSum[0] + totalSum[1] + totalSum[2] + totalSum[3];
-		System.out.printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", totalSum[0], totalSum[1], totalSum[2], totalSum[3], 0, subSum);
+		System.out.printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", totalSum[0], totalSum[1], totalSum[2], totalSum[3], subSum, 0);
 
 		System.out.print("과목평균");
+		
+		float subAvg = (((float) totalSum[0] / scoreList.size()) + 
+				((float) totalSum[1] / scoreList.size()) +
+				((float) totalSum[2] / scoreList.size()) +
+				((float) totalSum[3] / scoreList.size())) / 4 ;
 
-		System.out.printf("\t%.0f\t%.0f\t%.0f\t%.0f\t%d\t%.2f\n", ((float) totalSum[0] / scoreList.size()),
-				((float) totalSum[1] / scoreList.size()), ((float) totalSum[2] / scoreList.size()),
-				((float) totalSum[3] / scoreList.size()), 0, ((float) subSum / scoreList.size()));
-
+		System.out.printf("\t%.0f\t%.0f\t%.0f\t%.0f\t%d\t%.2f\n",
+				((float) totalSum[0] / scoreList.size()),
+				((float) totalSum[1] / scoreList.size()),
+				((float) totalSum[2] / scoreList.size()),
+				((float) totalSum[3] / scoreList.size()),
+				0,
+				((float) subAvg));
 		System.out.println("========================================================");
 
 	}
@@ -255,6 +270,7 @@ public class ScoreServiceImplV1 implements ScoreService {
 
 	@Override
 	public void scoreListSave() {
+
 		PrintStream pStream = null;
 
 		String saveFile = "src/com/biz/score/data/scoreList.txt";
@@ -269,6 +285,11 @@ public class ScoreServiceImplV1 implements ScoreService {
 			pStream.println("--------------------------------------------------------");
 
 			int size = scoreList.size();
+					
+			totalSum[0] = 0;
+			totalSum[1] = 0;
+			totalSum[2] = 0;
+			totalSum[3] = 0;
 
 			for (int i = 0; i < size; i++) {
 				scoreVO = scoreList.get(i);
@@ -280,6 +301,7 @@ public class ScoreServiceImplV1 implements ScoreService {
 				pStream.print(scoreVO.getSum() + "\t");
 				pStream.printf("%5.2f\t\n", scoreVO.getAvg());
 
+
 				totalSum[0] += scoreVO.getKor();
 				totalSum[1] += scoreVO.getEng();
 				totalSum[2] += scoreVO.getMath();
@@ -289,15 +311,28 @@ public class ScoreServiceImplV1 implements ScoreService {
 			pStream.println("--------------------------------------------------------");
 			pStream.print("과목총점");
 			int subSum = 0;
+			float subAvg = 0;
 
 			subSum = totalSum[0] + totalSum[1] + totalSum[2] + totalSum[3];
-			pStream.printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", totalSum[0], totalSum[1], totalSum[2], totalSum[3], 0, subSum);
+			pStream.printf("\t%d\t%s\t%s\t%s\t%s\t%s\n", totalSum[0], totalSum[1], totalSum[2], totalSum[3], subSum, 0);
 
 			pStream.print("과목평균");
+			
+			subAvg = (((float) totalSum[0] / scoreList.size()) + 
+					((float) totalSum[1] / scoreList.size()) +
+					((float) totalSum[2] / scoreList.size()) +
+					((float) totalSum[3] / scoreList.size())) / 4 ;
 
-			pStream.printf("\t%.0f\t%.0f\t%.0f\t%.0f\t%d\t%.2f\n", ((float) totalSum[0] / scoreList.size()),
-					((float) totalSum[1] / scoreList.size()), ((float) totalSum[2] / scoreList.size()),
-					((float) totalSum[3] / scoreList.size()), 0, ((float) subSum / scoreList.size()));
+			pStream.printf("\t%.0f\t%.0f\t%.0f\t%.0f\t%d\t%.2f\n",
+					((float) totalSum[0] / scoreList.size()),
+					((float) totalSum[1] / scoreList.size()),
+					((float) totalSum[2] / scoreList.size()),
+					((float) totalSum[3] / scoreList.size()),
+					0,
+					((float) subAvg));
+			
+			
+					
 
 			pStream.println("========================================================");
 		} catch (FileNotFoundException e ) {
